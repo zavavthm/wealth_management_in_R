@@ -100,11 +100,37 @@ ggplot(df_agg, aes(x=Date, y=daily.returns)) +
 ggplot(df_wfc, aes(x = daily.returns)) +
   geom_histogram(aes(y = ..density..), bins = 30, fill = "blue", alpha = 0.5) +
   geom_density(color = "red", size = 1) +
-  labs(title = "WFC", x = "Daily Returns Sigma", y = "Density") +
+  labs(title = "WFC", x = "Daily Returns Sigma (for 1 year)", y = "Density") +
   theme_minimal()
 
 ggplot(df_agg, aes(x = daily.returns)) +
   geom_histogram(aes(y = ..density..), bins = 30, fill = "blue", alpha = 0.5) +
   geom_density(color = "red", size = 1) +
-  labs(title = "AGG", x = "Daily Returns Sigma", y = "Density") +
+  labs(title = "AGG", x = "Daily Returns Sigma (for 1 year)", y = "Density") +
   theme_minimal()
+
+
+
+
+
+
+####################################################################3
+# Practice code for russel1000
+
+## comparing the stocks with Russel 1000 
+russel1000 <- monthlyReturn(getSymbols(Symbols = "RUI", auto.assign = F))
+joined_returns_monthly_rui <- tail(joined_returns, 110)
+joined_returns_monthly_rui <- merge.xts(joined_returns_monthly, russel1000)
+
+joined_returns_monthly_rui <- replace.na(joined_returns_monthly_rui, 0)
+
+#TODO
+wfc_te_rui <- sd(joined_returns_monthly_rui$monthly.returns[time_index:(time_index-11)]-joined_returns_monthly_rui$monthly.returns.6[time_index:(time_index-11)])*sqrt(12)
+
+msft_te_rui <- sd(joined_returns_monthly_rui$monthly.returns.1[time_index:(time_index-11)]-joined_returns_monthly_rui$monthly.returns.6[time_index:(time_index-11)])*sqrt(12)
+
+spy_te_rui <- sd(joined_returns_monthly_rui$monthly.returns.2[time_index:(time_index-11)]-joined_returns_monthly_rui$monthly.returns.6[time_index:(time_index-11)])*sqrt(12)
+
+gld_te_rui <- sd(joined_returns_monthly_rui$monthly.returns.3[time_index:(time_index-11)]-joined_returns_monthly_rui$monthly.returns.6[time_index:(time_index-11)])*sqrt(12)
+
+agg_te_rui <- sd(joined_returns_monthly_rui$monthly.returns.4[time_index:(time_index-11)]-joined_returns_monthly_rui$monthly.returns.6[time_index:(time_index-11)])*sqrt(12)

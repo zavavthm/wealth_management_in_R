@@ -82,17 +82,17 @@ etf1_m_returns <- monthlyReturn(getSymbols(Symbols = "SPY", auto.assign = F))
 commodity1_m_returns <- monthlyReturn(getSymbols(Symbols = "GLD", auto.assign = F))
 fixed_income1_m_returns <- monthlyReturn(getSymbols(Symbols = "AGG", auto.assign = F))
 
-joined_returns_monthly <- merge.xts(stock1_m_returns, stock2_m_returns, etf1_m_returns, fixed_income1_m_returns, commodity1_m_returns)
+joined_returns_monthly <- merge.xts(stock1_m_returns, stock2_m_returns, etf1_m_returns, commodity1_m_returns, fixed_income1_m_returns)
 
 # adding a benchmark -- RUSSEL 1000 - VONE
 
 benchmark_returns <- monthlyReturn(getSymbols("VONE", auto.assign = F))
 
-joined_prices_monthly <- merge.xts(joined_returns_monthly, benchmark_returns)
+joined_returns_monthly <- merge.xts(joined_returns_monthly, benchmark_returns)
 
-
-hist(joined_returns_monthly$monthly.returns)
-hist(joined_returns_monthly$monthly.returns.2)
+## plotting histograms for WSF and SPY
+#hist(joined_returns_monthly$monthly.returns)
+#hist(joined_returns_monthly$monthly.returns.2)
 
 # calculate sigma for last 12 months
 time_index <- nrow(joined_returns_monthly)
@@ -104,8 +104,45 @@ sd(joined_returns_monthly$monthly.returns[time_index:(time_index-11)])
 wfc_sigma <- sd(joined_returns_monthly$monthly.returns[time_index:(time_index-11)])*sqrt(12)
 msft_sigma <- sd(joined_returns_monthly$monthly.returns.1[time_index:(time_index-11)])*sqrt(12)
 spy_sigma <- sd(joined_returns_monthly$monthly.returns.2[time_index:(time_index-11)])*sqrt(12)
-gold_sigma <- sd(joined_returns_monthly$monthly.returns.3[time_index:(time_index-11)])*sqrt(12)
+gld_sigma <- sd(joined_returns_monthly$monthly.returns.3[time_index:(time_index-11)])*sqrt(12)
 agg_sigma <- sd(joined_returns_monthly$monthly.returns.4[time_index:(time_index-11)])*sqrt(12)
 vone_sigma <- sd(joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])*sqrt(12)
+
+
+## Tracking error for last 12 months
+wfc_te <- sd(joined_returns_monthly$monthly.returns[time_index:(time_index-11)]-joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])*sqrt(12)
+
+msft_te <- sd(joined_returns_monthly$monthly.returns.1[time_index:(time_index-11)]-joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])*sqrt(12)
+
+spy_te <- sd(joined_returns_monthly$monthly.returns.2[time_index:(time_index-11)]-joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])*sqrt(12)
+
+gld_te <- sd(joined_returns_monthly$monthly.returns.3[time_index:(time_index-11)]-joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])*sqrt(12)
+
+agg_te <- sd(joined_returns_monthly$monthly.returns.4[time_index:(time_index-11)]-joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])*sqrt(12)
+
+## Sharpe Ratio
+riskfree <- 0.0001
+
+# calculating stat expectation using mean() function
+wfc_expected <- mean(joined_returns_monthly$monthly.returns[time_index:(time_index-11)])
+msft_expected <- mean(joined_returns_monthly$monthly.returns.1[time_index:(time_index-11)])
+spy_expected <- mean(joined_returns_monthly$monthly.returns.2[time_index:(time_index-11)])
+gld_expected <- mean(joined_returns_monthly$monthly.returns.3[time_index:(time_index-11)])
+agg_expected <- mean(joined_returns_monthly$monthly.returns.4[time_index:(time_index-11)])
+vone_expected <- mean(joined_returns_monthly$monthly.returns.5[time_index:(time_index-11)])
+
+sharpe_ratio_wfc <- (((1+wfc_expected)^12)-1-riskfree)/wfc_sigma
+sharpe_ratio_msft <- (((1+msft_expected)^12)-1-riskfree)/msft_sigma
+sharpe_ratio_spy <- (((1+spy_expected)^12)-1-riskfree)/spy_sigma
+sharpe_ratio_gld <- (((1+gld_expected)^12)-1-riskfree)/gld_sigma
+sharpe_ratio_agg <- (((1+agg_expected)^12)-1-riskfree)/agg_sigma
+sharpe_ratio_vone <- (((1+vone_expected)^12)-1-riskfree)/vone_sigma
+
+sharpe_ratio_wfc
+sharpe_ratio_msft
+sharpe_ratio_spy
+sharpe_ratio_gld
+sharpe_ratio_agg
+sharpe_ratio_vone
 
 
