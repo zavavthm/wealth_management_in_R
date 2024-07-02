@@ -145,4 +145,45 @@ sharpe_ratio_gld
 sharpe_ratio_agg
 sharpe_ratio_vone
 
+## creating portfolio returns
+wfc_weight <- 0.2
+msft_weight <- 0.1
+spy_weight <- 0.1
+gld_weight <- 0.2
+agg_weight <- 0.4
+# these should always add upto 100%
 
+# calculating monthly returns with weightage per stock
+joined_returns_monthly <- as.data.frame(joined_returns_monthly) %>%
+  mutate(portfolio = wfc_weight * monthly.returns + 
+           msft_weight * monthly.returns.1 + 
+           spy_weight * monthly.returns.2 + 
+           gld_weight * monthly.returns.3 + 
+           agg_weight * monthly.returns.4)
+
+port_sigma <- sd(joined_returns_monthly$portfolio[time_index:(time_index-11)])*sqrt(12)
+
+port_expected <- mean(joined_returns_monthly$portfolio[time_index:(time_index-11)])
+
+sharpe_ratio_port <- (((1+port_expected)^12)-1-riskfree)/port_sigma
+
+## calculating correlation
+cor(joined_returns_monthly[time_index:(time_index-11), ])
+
+## creating quasi capm models
+last_12_months <- joined_returns_monthly[time_index:(time_index-11),]
+# building CAPM to predict WFC using Russel 1000
+wfc_reg <- lm(monthly.returns ~ monthly.returns.5, data=last_12_months)
+summary(wfc_reg)
+
+msft_reg <- lm(monthly.returns.1 ~ monthly.returns.5, data=last_12_months)
+summary(msft_reg)
+
+spy_reg <- lm(monthly.returns.2 ~ monthly.returns.5, data=last_12_months)
+summary(spy_reg)
+
+gld_reg <- lm(monthly.returns.3 ~ monthly.returns.5, data=last_12_months)
+summary(gld_reg)
+
+agg_reg <- lm(monthly.returns.4 ~ monthly.returns.5, data=last_12_months)
+summary(agg_reg)
