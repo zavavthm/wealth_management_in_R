@@ -187,3 +187,12 @@ summary(gld_reg)
 
 agg_reg <- lm(monthly.returns.4 ~ monthly.returns.5, data=last_12_months)
 summary(agg_reg)
+
+
+## Treynor Ratio
+wfc_trey <- (((1+wfc_expected)^12)-1-riskfree)/wfc_reg$coefficients[2]
+msft_trey <- (((1+msft_expected)^12)-1-riskfree)/msft_reg$coefficients[2]
+spy_trey <- (((1+spy_expected)^12)-1-riskfree)/spy_reg$coefficients[2]
+gld_trey <- (((1+gld_expected)^12)-1-riskfree)/gld_reg$coefficients[2]
+agg_trey <- (((1+agg_expected)^12)-1-riskfree)/agg_reg$coefficients[2]
+
