@@ -683,7 +683,7 @@ ggplot(tab, aes(x = sd, y = er, color = ticker)) +
 
 #-----------------------------------------------
 
-
+# efficient frontier 2 stocks
 # load the data
 ticker1_select <- "SPY" #which of the 3 do you want to use
 ticker2_select <- "BSX"
