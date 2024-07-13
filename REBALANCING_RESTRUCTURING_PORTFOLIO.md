@@ -1,0 +1,2 @@
+# Course: Wealth Management: Investment Risk Management and Optimization in R - FIN-5207 - SFO1
+## Individual Assignment: To provide full risk and return analysis for this portfolio. Provide recommendations on rebalancing.
