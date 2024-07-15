@@ -32,14 +32,15 @@ qqq <- monthlyReturn(getSymbols(Symbols = "QQQ", auto.assign = F))
 ief <- monthlyReturn(getSymbols(Symbols = "IEF", auto.assign = F))
 vnq <- monthlyReturn(getSymbols(Symbols = "VNQ", auto.assign = F))
 gld <- monthlyReturn(getSymbols(Symbols = "GLD", auto.assign = F))
-
+msft <- monthlyReturn(getSymbols(Symbols = "MSFT", auto.assign = F))
 
 ## creating a dataframe with monthly returns of all the assets in portfolio
 joined_monthly_returns <- merge.xts(ixn,
                                     qqq,
                                     ief,
                                     vnq,
-                                    gld
+                                    gld,
+                                    msft
                                     )
 
 
@@ -52,7 +53,7 @@ joined_monthly_returns <- merge.xts(joined_monthly_returns, benchmark_returns)
 
 
 ## renaming the column names for better readability
-colnames(joined_monthly_returns) <- c("ixn","qqq","ief","vnq","gld","vone")
+colnames(joined_monthly_returns) <- c("ixn","qqq","ief","vnq","gld","msft","vone")
 
 
 ## getting the total number of rows in our dataframe
@@ -65,6 +66,7 @@ sigma_qqq <- sd(joined_monthly_returns$qqq[time_index:(time_index-11)])*sqrt(12)
 sigma_ief <- sd(joined_monthly_returns$ief[time_index:(time_index-11)])*sqrt(12)
 sigma_vnq <- sd(joined_monthly_returns$vnq[time_index:(time_index-11)])*sqrt(12)
 sigma_gld <- sd(joined_monthly_returns$gld[time_index:(time_index-11)])*sqrt(12)
+sigma_msft <- sd(joined_monthly_returns$msft[time_index:(time_index-11)])*sqrt(12)
 sigma_vone <- sd(joined_monthly_returns$vone[time_index:(time_index-11)])*sqrt(12)
 
 
@@ -74,34 +76,65 @@ te_qqq <- sd(joined_monthly_returns$qqq[time_index:(time_index-11)]-joined_month
 te_ief <- sd(joined_monthly_returns$ief[time_index:(time_index-11)]-joined_monthly_returns$vone[time_index:(time_index-11)])*sqrt(12)
 te_vnq <- sd(joined_monthly_returns$vnq[time_index:(time_index-11)]-joined_monthly_returns$vone[time_index:(time_index-11)])*sqrt(12)
 te_gld <- sd(joined_monthly_returns$gld[time_index:(time_index-11)]-joined_monthly_returns$vone[time_index:(time_index-11)])*sqrt(12)
+te_msft <- sd(joined_monthly_returns$msft[time_index:(time_index-11)]-joined_monthly_returns$vone[time_index:(time_index-11)])*sqrt(12)
 
 
 ## Calculating Sharpe Ratio of individual assets
 riskfree <- 0.0001
 
 
-## expected returns of the assets (12 months)
+## expected monthly returns of the assets over 12 months
 exp_returns_ixn <- mean(joined_monthly_returns$ixn[time_index:(time_index-11)])
 exp_returns_qqq <- mean(joined_monthly_returns$qqq[time_index:(time_index-11)])
 exp_returns_ief <- mean(joined_monthly_returns$ief[time_index:(time_index-11)])
 exp_returns_vnq <- mean(joined_monthly_returns$vnq[time_index:(time_index-11)])
 exp_returns_gld <- mean(joined_monthly_returns$gld[time_index:(time_index-11)])
+exp_returns_msft <- mean(joined_monthly_returns$msft[time_index:(time_index-11)])
 
 
-## expected returns of the assets (18 months)
+## expected monthly returns of the assets over 18 months
 exp_returns_ixn_18 <- mean(joined_monthly_returns$ixn[time_index:(time_index-17)])
 exp_returns_qqq_18 <- mean(joined_monthly_returns$qqq[time_index:(time_index-17)])
 exp_returns_ief_18 <- mean(joined_monthly_returns$ief[time_index:(time_index-17)])
 exp_returns_vnq_18 <- mean(joined_monthly_returns$vnq[time_index:(time_index-17)])
 exp_returns_gld_18 <- mean(joined_monthly_returns$gld[time_index:(time_index-17)])
+exp_returns_msft_18 <- mean(joined_monthly_returns$msft[time_index:(time_index-17)])
 
 
-## expected returns of the assets (24 months)
+## expected monthly returns of the assets over 24 months
 exp_returns_ixn_24 <- mean(joined_monthly_returns$ixn[time_index:(time_index-23)])
 exp_returns_qqq_24 <- mean(joined_monthly_returns$qqq[time_index:(time_index-23)])
 exp_returns_ief_24 <- mean(joined_monthly_returns$ief[time_index:(time_index-23)])
 exp_returns_vnq_24 <- mean(joined_monthly_returns$vnq[time_index:(time_index-23)])
 exp_returns_gld_24 <- mean(joined_monthly_returns$gld[time_index:(time_index-23)])
+exp_returns_msft_24 <- mean(joined_monthly_returns$msft[time_index:(time_index-23)])
+
+
+## 12 Months assets Return
+exp_returns_ixn_12mr <- ((1+exp_returns_ixn)^12) - 1
+exp_returns_qqq_12mr <- ((1+exp_returns_qqq)^12) - 1
+exp_returns_ief_12mr <- ((1+exp_returns_ief)^12) - 1
+exp_returns_vnq_12mr <- ((1+exp_returns_vnq)^12) - 1
+exp_returns_gld_12mr <- ((1+exp_returns_gld)^12) - 1
+exp_returns_msft_12mr <- ((1+exp_returns_msft)^12) - 1
+
+
+## 18 Months assets Return
+exp_returns_ixn_18mr <- ((1+exp_returns_ixn_18)^18) - 1
+exp_returns_qqq_18mr <- ((1+exp_returns_qqq_18)^18) - 1
+exp_returns_ief_18mr <- ((1+exp_returns_ief_18)^18) - 1
+exp_returns_vnq_18mr <- ((1+exp_returns_vnq_18)^18) - 1
+exp_returns_gld_18mr <- ((1+exp_returns_gld_18)^18) - 1
+exp_returns_msft_18mr <- ((1+exp_returns_msft_18)^18) - 1
+
+
+## 24 Months assets Return
+exp_returns_ixn_24mr <- ((1+exp_returns_ixn_24)^24) - 1
+exp_returns_qqq_24mr <- ((1+exp_returns_qqq_24)^24) - 1
+exp_returns_ief_24mr <- ((1+exp_returns_ief_24)^24) - 1
+exp_returns_vnq_24mr <- ((1+exp_returns_vnq_24)^24) - 1
+exp_returns_gld_24mr <- ((1+exp_returns_gld_24)^24) - 1
+exp_returns_msft_24mr <- ((1+exp_returns_msft_24)^24) - 1
 
 
 ## Calculating the Sharpe Ratio of every asset in the portfolio
@@ -110,6 +143,7 @@ sharpe_ratio_qqq <- (((1+exp_returns_qqq)^12)-1-riskfree)/sigma_qqq
 sharpe_ratio_ief <- (((1+exp_returns_ief)^12)-1-riskfree)/sigma_ief
 sharpe_ratio_vnq <- (((1+exp_returns_vnq)^12)-1-riskfree)/sigma_vnq
 sharpe_ratio_gld <- (((1+exp_returns_gld)^12)-1-riskfree)/sigma_gld
+sharpe_ratio_msft <- (((1+exp_returns_msft)^12)-1-riskfree)/sigma_msft
 
 
 ## creating portfolio returns
@@ -120,30 +154,44 @@ qqq_w <- 0.221
 ief_w <- 0.285
 vnq_w <- 0.089
 gld_w <- 0.23
+msft_w <- 0
 
 
-# calculating monthly returns with weightage per asset
-joined_monthly_returns <- as.data.frame(joined_monthly_returns) %>%
+# calculating monthly returns with weightage per asset (existing portfolio)
+joined_monthly_returns_ep <- as.data.frame(joined_monthly_returns) %>%
   mutate(portfolio = ixn_w * ixn +
            qqq_w * qqq +
            ief_w * ief +
            vnq_w * vnq +
-           gld_w * gld)
+           gld_w * gld + 
+           msft_w * msft)
 
 # portfolio sigma (12 months)
-port_sigma <- sd(joined_monthly_returns$portfolio[time_index:(time_index-11)])*sqrt(12)
+port_sigma <- sd(joined_monthly_returns_ep$portfolio[time_index:(time_index-11)])*sqrt(12)
 
 
-## portfolio expected returns (12 months)
-port_expected <- mean(joined_monthly_returns$portfolio[time_index:(time_index-11)])
+## portfolio monthly expected returns (12 months)
+port_expected <- mean(joined_monthly_returns_ep$portfolio[time_index:(time_index-11)])
 
 
-## portfolio expected returns (18 months)
-port_expected_18 <- mean(joined_monthly_returns$portfolio[time_index:(time_index-17)])
+## portfolio monthly expected returns (18 months)
+port_expected_18 <- mean(joined_monthly_returns_ep$portfolio[time_index:(time_index-17)])
 
 
-## portfolio expected returns (24 months)
-port_expected_24 <- mean(joined_monthly_returns$portfolio[time_index:(time_index-23)])
+## portfolio monthly expected returns (24 months)
+port_expected_24 <- mean(joined_monthly_returns_ep$portfolio[time_index:(time_index-23)])
+
+
+## portfolio 12 months return
+port_expected_12mr <- ((1+port_expected)^12) - 1
+
+
+## portfolio 18 months return
+port_expected_18mr <- ((1+port_expected_18)^18) - 1
+
+
+## portfolio 24 months return
+port_expected_24mr <- ((1+port_expected_24)^24) - 1
 
 
 # portfolio sharpe ratio (12 months)
@@ -151,23 +199,12 @@ sharpe_ratio_port <- (((1+port_expected)^12)-1-riskfree)/port_sigma
 
 
 ## calculating correlation among assets in the portfolio
-port_cor <- cor(joined_monthly_returns[time_index:(time_index-11), ])
+port_cor <- cor(joined_monthly_returns_ep[time_index:(time_index-11), ])
+port_cor
 
-
-## 2. What are the correlations between your assets? Are there any interesting correlations?
-# Ans:
-# ---> Interesting correlations:
-# ---> 1. All the stocks in the portfolio are ~90% correlated to each other except Gold which has only 40% correlation
-# ---> 2. IEF (Treasury Bonds ETF) and QQQ (Best performing large cap growth fund) have a 83.4% correlation which is very high.
-# ---> -- It means that bonds and equity are growing parallely which might indicate that there's a bubble in the equity and bond market
-# ---> -- and soon a correction could be made bringing down the prices. 
-# ---> 3. Usually the gold and real estate market go in opposite directions to each other. Rarely it happens that both are growing together.
-# ---> -- Here, there's a 25.5% correlation between the 2 showing that they are kinda independent.
-# ---> IEF & IXN
-# ---> IEF & GLD
 
 # creating dataframe for last 12 months returns for the individual assets
-last_12_months_returns <- joined_monthly_returns[time_index:(time_index-11),]
+last_12_months_returns <- joined_monthly_returns_ep[time_index:(time_index-11),]
 
 
 ## building CAPM to predict assets performance individually using Russel 1000
@@ -176,6 +213,7 @@ reg_qqq <- lm(qqq ~ vone, data=last_12_months_returns)
 reg_ief <- lm(ief ~ vone, data=last_12_months_returns)
 reg_vnq <- lm(vnq ~ vone, data=last_12_months_returns)
 reg_gld <- lm(gld ~ vone, data=last_12_months_returns)
+reg_msft <- lm(msft ~ vone, data=last_12_months_returns)
 
 
 # Regression Model results for individual assets
@@ -184,6 +222,7 @@ summary(reg_qqq)
 summary(reg_ief)
 summary(reg_vnq)
 summary(reg_gld)
+summary(reg_msft)
 
 ## Treynor Ratio of individual assets in the portfolio
 trey_ixn <- (((1+exp_returns_ixn)^12)-1-riskfree)/reg_ixn$coefficients[2]
@@ -191,14 +230,7 @@ trey_qqq <- (((1+exp_returns_qqq)^12)-1-riskfree)/reg_qqq$coefficients[2]
 trey_ief <- (((1+exp_returns_ief)^12)-1-riskfree)/reg_ief$coefficients[2]
 trey_vnq <- (((1+exp_returns_vnq)^12)-1-riskfree)/reg_vnq$coefficients[2]
 trey_gld <- (((1+exp_returns_gld)^12)-1-riskfree)/reg_gld$coefficients[2]
-
-
-## 4. Based on the previous 3 questions, which holdings would you sell, which holdings would you buy? 
-# Ans: IEF: -0.0005 (-0.05%) --> NOT SELL (But reduce the weightage)
-#      VNQ: 0.003 (0.3%) --> BUY
-#      QQQ: 2.2% --> BUY
-#      IXN: 2.7% --> BUY
-#      GLD: 1.7% --> BUY
+trey_msft <- (((1+exp_returns_msft)^12)-1-riskfree)/reg_msft$coefficients[2]
 
 
 ## REBALANCING
@@ -208,7 +240,7 @@ enddate <- "2024-07-13"
 startdate <- "2016-08-22"
 
 # Define tickers
-tickers <- c("IXN", "QQQ", "IEF", "VNQ", "GLD")
+tickers <- c("IXN", "QQQ", "IEF", "VNQ", "GLD", "MSFT")
 
 # Fetch data for all tickers and align to common date range
 all_data <- lapply(tickers, function(ticker) {
@@ -273,7 +305,7 @@ effFrontier <- function(averet, rcov, nports, shorts, wmax, wmin) {
   return(list(vol = vol, ret = ret, weights = pw))
 }
 
-maxSharpe <- function(averet, rcov, shorts = F, wmax = 0.2, min.weight = 0.05) {
+maxSharpe <- function(averet, rcov, shorts = F, wmax = 0.2, min.weight = 0.02) {
   optim.callback <- function(param, averet, rcov, reshigh, reslow, shorts) { 
     port.sol <- NULL
     try(port.sol <- portfolio.optim(x = averet, pm = param, covmat = rcov, reshigh = reshigh, reslow = reslow, shorts = shorts), silent = T)
@@ -310,59 +342,103 @@ print(z)
 
 ## CREATING NEW PORTFOLIO WITH UPDATED WEIGHTAGES:
 
-## creating portfolio returns (12 months)
+## creating new rebalanced and restructured portfolio returns (12 months)
 
-# assigning weightage
-ixn_w_new <- 0.243
-qqq_w_new <- 0.25
-ief_w_new <- 0.222
-vnq_w_new <- 0.035
-gld_w_new <- 0.25
-
+# assigning new weightage
+ixn_w_new <- 0.02513358 
+qqq_w_new <- 0.3
+ief_w_new <- 0.24157790 
+vnq_w_new <- 0.02
+gld_w_new <- 0.3
+msft_w_new <- 0.11328852
 
 # calculating monthly returns with weightage per asset
-joined_monthly_returns <- as.data.frame(joined_monthly_returns) %>%
+joined_monthly_returns_new <- as.data.frame(joined_monthly_returns) %>%
   mutate(portfolio = ixn_w_new * ixn +
            qqq_w_new * qqq +
            ief_w_new * ief +
            vnq_w_new * vnq +
-           gld_w_new * gld)
+           gld_w_new * gld + 
+           msft_w_new * msft)
 
-# portfolio sigma (12 months)
-port_sigma_new <- sd(joined_monthly_returns$portfolio[time_index:(time_index-11)])*sqrt(12)
+# New rebalanced and restructured  sigma (12 months)
+port_sigma_new <- sd(joined_monthly_returns_new$portfolio[time_index:(time_index-11)])*sqrt(12)
 
-# portfolio expected returns (12 months)
-port_expected_new <- mean(joined_monthly_returns$portfolio[time_index:(time_index-11)])
+# New rebalanced and restructured portfolio expected returns (12 months)
+port_expected_new <- mean(joined_monthly_returns_new$portfolio[time_index:(time_index-11)])
 
-# portfolio expected returns (18 months)
-port_expected_18_new <- mean(joined_monthly_returns$portfolio[time_index:(time_index-17)])
+print(port_sigma_new)
+print(port_expected_new)
 
-# portfolio expected returns (24 months)
-port_expected_24_new <- mean(joined_monthly_returns$portfolio[time_index:(time_index-23)])
+# new portfolio rebalanced annualized returns (12 months)
+port_expected_new_12mr <- ((1+port_expected_new)^12) - 1
 
-# portfolio sharpe ratio (12 months)
+# new portfolio rebalanced annualized returns (18 months)
+port_expected_new_18mr <- ((1+port_expected_new)^18) - 1
+
+# new portfolio rebalanced annualized returns (24 months)
+port_expected_new_24mr <- ((1+port_expected_new)^24) - 1
+
+# New rebalanced and restructured portfolio expected returns (18 months)
+port_expected_18_new <- mean(joined_monthly_returns_new$portfolio[time_index:(time_index-17)])
+
+# New rebalanced and restructured portfolio expected returns (24 months)
+port_expected_24_new <- mean(joined_monthly_returns_new$portfolio[time_index:(time_index-23)])
+
+# New rebalanced and restructured portfolio sharpe ratio (12 months)
 sharpe_ratio_port_new <- (((1+port_expected_new)^12)-1-riskfree)/port_sigma_new
 
 
-## calculating correlation among assets in the portfolio
-port_cor_new <- cor(joined_monthly_returns[time_index:(time_index-11), ])
+## calculating correlation among assets in the new portfolio
+port_cor_new <- cor(joined_monthly_returns_new[time_index:(time_index-11), ])
 
 
-## ---> by changing the assets % in the portfolio, the returns increased from 0.01377038 to 0.01646111
-## ---> by changing the assets % in the portfolio, the risk increased from 0.1196674 to 0.1227873
-## ---> by changing the assets % in the portfolio, the SR increased from 1.489565 to 1.761874
+
+################################################################################
+################################################################################
+# 
+# 
+# VISUALIZATIONS
+# 
+# 
+################################################################################
+################################################################################
+
+
+## BAR GRAPH comparing the portfolio returns. (old and new)
+#  --------------------------------------------------------------
+
+returns <- c(port_expected_12mr, port_expected_new_12mr)
+colnames <- c("OLD_PORTFOLIO", "NEW_PORTFOLIO")
+
+df <- data.frame(returns, colnames)
+
+# Define the color palette
+colors <- c("OLD_PORTFOLIO" = "lightblue", "NEW_PORTFOLIO" = "blue")
+
+# Plot the returns with facets
+ggplot(df, aes(x = colnames, y = returns, fill = colnames)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = colors) +
+  labs(title = "Comparison of New and Old Expected Annual Portfolio returns",
+       x = "Portfolios",
+       y = "Annualized Expected Returns") +
+  theme_minimal() +
+  theme(legend.position = "none")
 
 
 
 ## EFFICIENT FRONTINER
-# GLD (1.8), IXN (1.89), and QQQ (1.82) have the highest sharpe ratio
-# So, taking them into 
+
+# GLD (1.8), IXN (1.89), and QQQ (1.82) have the highest Sharpe ratio in the existing portfolio. So, taking them to visualize the efficient frontier
+
+# MSFT (1.92), IXN (1.89), and QQQ (1.82) have the highest Sharpe ratio in the new portfolio. So, taking them to visualize the efficient frontier
 
 # efficient frontier 2 stocks
 # load the data
-ticker1_select <- "IXN" #which of the 3 do you want to use
+ticker1_select <- "GLD"
 ticker2_select <- "QQQ"
-ticker3_select <- "GLD"
+ticker3_select <- "MSFT"
 
 mydf1 <- as.data.frame(monthlyReturn(getSymbols(ticker1_select, auto.assign=FALSE)))
 mydf2 <- as.data.frame(monthlyReturn(getSymbols(ticker2_select, auto.assign=FALSE)))
@@ -408,7 +484,7 @@ ggplot() +
   geom_point(data = data.table(sd = c(sd_x, sd_y), mean = c(er_x, er_y)),
              aes(x = sd, y = mean), color = "red", size = 3, shape = 18) +
   # Miscellaneous Formatting
-  theme_bw() + ggtitle("Possible Portfolios with Two Risky Assets - SPY & BSX") +
+  theme_bw() + ggtitle("Possible Portfolios with Two Risky Assets - IXN & QQQ") +
   xlab("Volatility") + ylab("Expected Returns") +
   scale_y_continuous(label = percent, limits = c(0, max(two_assets$er_p) * 1.2)) +
   scale_x_continuous(label = percent, limits = c(0, max(two_assets$sd_p) * 1.2)) +
@@ -416,7 +492,7 @@ ggplot() +
 
 
 
-# Visualizing the efficient frontier for 3 stocks BSX, SPY, GLD
+# Visualizing the efficient frontier for 3 stocks 
 #  --------------------------------------------------------------
 
 ######################################################
@@ -469,9 +545,10 @@ ggplot() +
   geom_point(data = data.table(sd = c(sd_x, sd_y, sd_z), mean = c(er_x, er_y, er_z)),
              aes(x = sd, y = mean), color = "red", size = 3, shape = 18) +
   # Miscellaneous Formatting
-  theme_bw() + ggtitle("IXN, QQQ and VNQ") +
+  theme_bw() + ggtitle("GLD, QQQ and MSFT") +
   xlab("Volatility (Risk)") + ylab("Expected Returns") +
   scale_y_continuous(label = percent, limits = c(0, max(three_assets$er_p) * 1.2)) +
   scale_x_continuous(label = percent, limits = c(0, max(three_assets$sd_p) * 1.2)) +
   scale_color_gradientn(colors = c("red", "blue", "yellow"),
                         name = expression(omega[x] - omega[z]), labels = percent)
+
